@@ -11,6 +11,19 @@ module.exports = function (grunt) {
   var reloadPort = 35729, files;
 
   grunt.initConfig({
+    bower: {
+      install: {
+        options: {
+          targetDir: './lib',
+          layout: 'byType',
+          install: true,
+          verbose: true,
+          cleanTargetDir: false,
+          cleanBowerDir: false,
+          bowerOptions: {}
+        }
+      }
+    },
     pkg: grunt.file.readJSON('package.json'),
     develop: {
       server: {
@@ -26,7 +39,8 @@ module.exports = function (grunt) {
         files: [
           'bin/www',
           'app.js',
-          'routes/*.js'
+          'routes/*.js',
+          'models/*.js'
         ],
         tasks: ['develop', 'delayed-livereload']
       },

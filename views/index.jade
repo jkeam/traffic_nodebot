@@ -7,4 +7,9 @@ block content
   form(name="input", action="/", method="post")
     input(type='text', placeholder='Address (City, State, Zip)', size=100, name='address')
     input(type='text', placeholder='Radius in miles', size=25, name='radius')
-    input(type="submit", value="Submit")
+    input(type="submit", value="Submit", id='submit')
+
+  div
+    ol(id="results")
+
+  div(id="error", class="error")
