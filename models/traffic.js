@@ -13,17 +13,21 @@ function getGeocodeInfo(responseString) {
 }
 
 function getTrafficUrl(mileRadius, latitude, longitude) {
-  var radius = 0.016666667 * mileRadius;
-  var latitudeHigh = latitude + radius;
-  var latitudeLow = latitude - radius;
-  var longitudeHigh = longitude + radius;
-  var longitudeLow = longitude - radius;
+  var kmRadius = mileRadius * 0.621371;
+  var latRadiusDegree = (1 / 110.54) * kmRadius;
+  var longRadiusDegree = (1 / (111.320 * Math.cos(latRadiusDegree))) * kmRadius;
+
+  var latitudeHigh = latitude + latRadiusDegree;
+  var latitudeLow = latitude - latRadiusDegree;
+  var longitudeHigh = longitude + longRadiusDegree;
+  var longitudeLow = longitude - longRadiusDegree;
   var url = "http://www.mapquestapi.com/traffic/v2/incidents?key=" + mapquestKey + "&callback=handleIncidentsResponse&boundingBox=" + latitudeHigh + "," + longitudeHigh + "," + latitudeLow + "," + longitudeLow + "&filters=construction,incidents&inFormat=kvp&outFormat=json";
 
   if (debug) {
     console.log("url: " + url);
     console.log('mileRadius: ' + mileRadius);
-    console.log('radius: ' + radius);
+    console.log('latRadiusDegree: ' + latRadiusDegree);
+    console.log('longRadiusDegree: ' + longRadiusDegree);
   }
   return url
 }
@@ -89,15 +93,18 @@ function traffic(socket, mileRadius, latitude, longitude) {
         console.log("statuscode: " + trafficInfo.info.statuscode);
       }
       if (trafficInfo.info.statuscode === 0) {
-        for(var i =0; i< incidents.length; i++) {
-          socket.emit('results', incidents[i].fullDesc);
+        if (incidents.length > 0) {
+          var trafficIncidents = incidents.map(function(incident){
+            return incident.fullDesc;
+          });
+          socket.emit('results', trafficIncidents);
+        } else {
+          socket.emit('results', 'No results');
         }
       } else {
         console.error('Problem getting traffic: ' + response);
         var messages = trafficInfo.info.messages;
-        for(var i =0; i< messages.length; i++) {
-          socket.emit('error', messages[i]);
-        }
+        socket.emit('error', messages);
       }
     } else {
       socket.emit('error', "Problem getting traffic: " + response);
