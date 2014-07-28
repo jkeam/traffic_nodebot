@@ -53,7 +53,7 @@ function geocode(socket, address, mileRadius, callback) {
 
         latitude = parseFloat(latLong.lat);
         longitude = parseFloat(latLong.lng);
-        callback(socket, mileRadius, latitude, longitude);
+        callback(socket, address, mileRadius, latitude, longitude);
       } else {
         console.error("Problem geocoding: " + address);
         console.error(response);
@@ -67,7 +67,7 @@ function geocode(socket, address, mileRadius, callback) {
   });
 }
 
-function traffic(socket, mileRadius, latitude, longitude) {
+function traffic(socket, address, mileRadius, latitude, longitude) {
   if (debug) {
     console.log("mileRadius: " + mileRadius);
     console.log("latitude: " + latitude);
@@ -108,7 +108,7 @@ function traffic(socket, mileRadius, latitude, longitude) {
           });
           socket.emit('results', trafficIncidents);
         } else {
-          socket.emit('noResults', 'No results');
+          socket.emit('noResults', 'No results for ' + address + " within a " + mileRadius + " radius");
         }
       } else {
         console.error('Problem getting traffic: ' + response);
