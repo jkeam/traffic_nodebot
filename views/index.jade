@@ -1,15 +1,17 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div(data-ng-controller='TrafficController')
+    h1= title
+    p Welcome to #{title}
 
-  form(name="input", action="/", method="post")
-    input(type='text', placeholder='Address (City, State, Zip)', size=100, name='address')
-    input(type='text', placeholder='Radius in miles', size=25, name='radius')
-    input(type="submit", value="Submit", id='submit')
+    form(data-ng-submit='submit()')
+      input(type='text', data-ng-model="address", placeholder='Address (City, State, Zip)', size=100)
+      input(type='text', data-ng-model="radius", placeholder='Radius in miles', size=25)
+      input(type="submit", value="Submit", id='submit')
 
-  div
-    ol(id="results")
+    div.gridStyle(data-ng-grid='gridOptions', data-ng-if='results.length > 0')
 
-  div(id="error", class="error")
+    div(data-ng-bind='noResults')
+
+    div.error(data-ng-bind='errorMessages')

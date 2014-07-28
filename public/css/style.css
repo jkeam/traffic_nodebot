@@ -10,3 +10,9 @@ a {
 .error {
   color: red;
 }
+
+.ngCellText {
+ white-space: normal;
+}
+
+

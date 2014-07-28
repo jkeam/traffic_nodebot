@@ -95,11 +95,20 @@ function traffic(socket, mileRadius, latitude, longitude) {
       if (trafficInfo.info.statuscode === 0) {
         if (incidents.length > 0) {
           var trafficIncidents = incidents.map(function(incident){
-            return incident.fullDesc;
+            //return incident.fullDesc + " (" + incident.startTime + " to " + incident.endTime + "); " +
+            //  "severity: " + incident.severity + "/4; impacting traffic: " + incident.impacting;
+            return {
+              desc: incident.fullDesc,
+              //shortDesc: incident.shortDesc,
+              startTime: incident.startTime,
+              endTime: incident.endTime,
+              severity: incident.severity,
+              impacting: incident.impacting
+            }
           });
           socket.emit('results', trafficIncidents);
         } else {
-          socket.emit('results', 'No results');
+          socket.emit('noResults', 'No results');
         }
       } else {
         console.error('Problem getting traffic: ' + response);
