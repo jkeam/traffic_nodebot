@@ -1,3 +1,3 @@
 module.exports = {
-  MAPQUEST_KEY: ""
+  MAPQUEST_KEY: process.env.MAPQUEST_KEY
 }
